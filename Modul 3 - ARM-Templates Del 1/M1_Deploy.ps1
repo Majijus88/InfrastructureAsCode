@@ -17,4 +17,4 @@ New-AzResourceGroupDeployment `
 -TemplateFile 'G:\Koder\Infrastructure as Code\Modul 3 - ARM-Templates Del 1\M1_BasicSA.json'
 
 #Kommandoen nedenfor brukes for å slette RG jeg benytter i modulen
-#Remove-AzResourceGroup -Name $rg -Force:$trueff
+#Remove-AzResourceGroup -Name $rg -Force:$true

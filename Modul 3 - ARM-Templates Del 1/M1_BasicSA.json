@@ -5,13 +5,14 @@
     "variables": {},
     "resources": [
         {
-            "name": "samdhmodul1",
             "type": "Microsoft.Storage/storageAccounts",
-            "apiVersion": "2015-06-15",
+            "name": "samdhmodul1",
+            "apiVersion": "2019-06-01",
             "location": "[resourceGroup().location]",
-            "properties": {
-                "accountType": "Standard_LRS"
-            }
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "StorageV2"
         }
     ],
     "outputs": {}
