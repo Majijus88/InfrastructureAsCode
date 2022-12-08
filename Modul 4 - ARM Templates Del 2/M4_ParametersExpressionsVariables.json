@@ -13,5 +13,11 @@
             "kind": "StorageV2"
         }
     ],
-    "outputs": {}
+    "outputs": {
+        "uniqueString": {
+            "value": "[uniqueString(resourceGroup().id)]",
+            "type": "string"
+
+        }
+    }
 }
