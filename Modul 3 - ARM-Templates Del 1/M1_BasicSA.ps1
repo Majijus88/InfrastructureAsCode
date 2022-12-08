@@ -12,10 +12,11 @@ New-AzResourceGroup -Name $rg -Location $location -Force
 
 #Oppretter en ny deployment  der jeg kan sette inn Name, RG og Templatefil
 New-AzResourceGroupDeployment `
--Name "M1-Basic-SA-v1" `
+-Name "M1-Basic-SA-med-parameter" `
 -ResourceGroupName $rg `
 -TemplateFile 'G:\Koder\Infrastructure as Code\Modul 3 - ARM-Templates Del 1\M1_BasicSA.json' `
--storageName "samdhmodul1"
+-storageName "samodul1mdhparameter" `
+-storageSKU "Standard_LRS"
 
 #Kommandoen nedenfor brukes for å slette RG jeg benytter i modulen
 #Remove-AzResourceGroup -Name $rg -Force:$true
