@@ -15,7 +15,8 @@ New-AzResourceGroupDeployment `
     -ResourceGroupName $rg `
     -TemplateFile 'Modul 5 - ARM Templates Del 3\M5_ParameterFiles.json' `
     -TemplateParameterFile 'Modul 5 - ARM Templates Del 3\M5_ParameterFiles_prod.parameters.json'
-#Remove-AzResourceGroup -Name $rg -Force:$true
+#Kommandoen nedenfor brukes for å slette RG jeg benytter i modulen
+Remove-AzResourceGroup -Name $rg -Force:$true
 
 $rg = "Modul-05-Oving-Test"
 #Oppretter en ny Resource Group med navn og location definert ovenfor i variabelene $rg og $location
