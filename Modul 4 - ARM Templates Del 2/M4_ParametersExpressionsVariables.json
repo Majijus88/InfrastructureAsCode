@@ -33,12 +33,25 @@
             "metadata": {
                 "description": "Godkjente locations for deployment av storage account"
             }
+        },
+        "department": {
+            "type": "string",
+            "defaultValue": "test",
+            "allowedValues": [
+                "test",
+                "dev",
+                "prod"
+            ]
         }
+    },
+    "variables": {
+        "accountName": "[concat(parameters('storageAccountName'), parameters('department'))]"
+
     },
     "resources": [
         {
             "type": "Microsoft.Storage/storageAccounts",
-            "name": "[parameters('storageAccountName')]",
+            "name": "[variables('accountName')]",
             "apiVersion": "2019-06-01",
             "location": "[parameters('location')]",
             "sku": {
