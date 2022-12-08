@@ -5,17 +5,17 @@
 #$secret = "pa08Q~n4Ps2h5blo8Y6UxMJ~vl.SROCiCCbjsc8s"
 #Connect-AzAccount -ServicePrincipal -Credential $credentials -TenantId $tenantid -Environment AzureCloud -Subscription $subscriptionid
 
-$rg = "Modul-01-Oving"
+$rg = "Modul-03-Oving"
 $location = "northeurope"
 #Oppretter en ny Resource Group med navn og location definert ovenfor i variabelene $rg og $location
 New-AzResourceGroup -Name $rg -Location $location -Force
 
 #Oppretter en ny deployment  der jeg kan sette inn Name, RG og Templatefil
 New-AzResourceGroupDeployment `
--Name "M1-Basic-SA-med-parameter" `
+-Name "M3-Basic-SA-med-parameter" `
 -ResourceGroupName $rg `
--TemplateFile 'G:\Koder\Infrastructure as Code\Modul 3 - ARM-Templates Del 1\M1_BasicSA.json' `
--storageName "samodul1mdhparameter" `
+-TemplateFile 'G:\Koder\Infrastructure as Code\Modul 3 - ARM-Templates Del 1\M3_BasicSA.json' `
+-storageName "samodul3mdhparameter" `
 -storageSKU "Standard_LRS"
 
 #Kommandoen nedenfor brukes for å slette RG jeg benytter i modulen
