@@ -14,10 +14,21 @@
         }
     ],
     "outputs": {
-        "uniqueString": {
+        "uniqueStringRG": {
             "value": "[uniqueString(resourceGroup().id)]",
             "type": "string"
-
+        },
+        "ResourceGroup": {
+            "value":  "[resourceGroup().id]",
+            "type": "string"
+        },
+        "Deployment": {
+            "value": "[resourceGroup().name]",
+            "type": "string"
+        },
+        "uniqueStringDeployment": {
+            "value": "[uniqueString(resourceGroup().name)]",
+            "type": "string"
         }
     }
 }
