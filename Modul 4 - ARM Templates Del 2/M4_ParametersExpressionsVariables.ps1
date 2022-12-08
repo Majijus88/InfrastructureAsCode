@@ -15,6 +15,8 @@ New-AzResourceGroupDeployment `
     -Name "M4-Parameters-Expressions-Variables" `
     -ResourceGroupName $rg `
     -TemplateFile 'G:\Koder\Infrastructure as Code\Modul 4 - ARM Templates Del 2\M4_ParametersExpressionsVariables.json' `
+    -StorageAccountName "samdhm4parameter" `
+    -storageAccountSKU "Standard_GRS"
 
 #Kommandoen nedenfor brukes for å slette RG jeg benytter i modulen
 #Remove-AzResourceGroup -Name $rg -Force:$true
