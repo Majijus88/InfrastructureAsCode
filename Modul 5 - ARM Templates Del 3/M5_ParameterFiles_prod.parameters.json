@@ -6,7 +6,7 @@
             "value": "samdhm5parafile"
         },
         "storageAccountSKU": {
-            "value": "Standard_LRS"
+            "value": "Standard_GRS"
         },
         "location": {
             "value": "North Europe"

@@ -5,17 +5,26 @@
 #$secret = "pa08Q~n4Ps2h5blo8Y6UxMJ~vl.SROCiCCbjsc8s"
 #Connect-AzAccount -ServicePrincipal -Credential $credentials -TenantId $tenantid -Environment AzureCloud -Subscription $subscriptionid
 
-$rg = "Modul-05-Oving"
+$rg = "Modul-05-Oving-Prod"
 $location = "North Europe"
 #Oppretter en ny Resource Group med navn og location definert ovenfor i variabelene $rg og $location
 New-AzResourceGroup -Name $rg -Location $location -Force
-
-#Oppretter en ny deployment som henter verdier til parametere fra parameterfilen.
+#Oppretter en ny deployment som henter verdier til parametere fra parameterfilen(e).
 New-AzResourceGroupDeployment `
-    -Name "M5-ParameterFiles" `
+    -Name "M5-ParameterFiles-Prod" `
     -ResourceGroupName $rg `
-    -TemplateFile '.\Modul 5 - ARM Templates Del 3\M5_ParameterFiles.json' `
-    -TemplateParameterFile '.\Modul 5 - ARM Templates Del 3\M5_ParameterFiles.parameters.json'
+    -TemplateFile 'Modul 5 - ARM Templates Del 3\M5_ParameterFiles.json' `
+    -TemplateParameterFile 'Modul 5 - ARM Templates Del 3\M5_ParameterFiles_prod.parameters.json'
+
+$rg = "Modul-05-Oving-Test"
+#Oppretter en ny Resource Group med navn og location definert ovenfor i variabelene $rg og $location
+New-AzResourceGroup -Name $rg -Location $location -Force
+
+New-AzResourceGroupDeployment `
+    -Name "M5-ParameterFiles-Test" `
+    -ResourceGroupName $rg `
+    -TemplateFile 'Modul 5 - ARM Templates Del 3\M5_ParameterFiles.json' `
+    -TemplateParameterFile 'Modul 5 - ARM Templates Del 3\M5_ParameterFiles_test.parameters.json'
 
 #Kommandoen nedenfor brukes for å slette RG jeg benytter i modulen
 #Remove-AzResourceGroup -Name $rg -Force:$true
