@@ -22,6 +22,12 @@
                 "Standard_LRS",
                 "Standard_GRS"
             ]
+        },
+        "serverFarmName": {
+            "type": "string"
+        },
+        "webAppName": {
+            "type": "string"
         }
     },
     "variables": {},
@@ -34,16 +40,39 @@
             "sku": {
                 "name": "[parameters('storageAccountSKU')]"
             },
-            "kind": "StorageV2"
+            "kind": "StorageV2",
+            "resources": [
+                {
+                    "type": "blobServices/containers",
+                    "apiVersion": "2019-06-01",
+                    "name": "/default/input",
+                    "dependsOn": [
+                        "[parameters('storageAccountName')]"
+                    ]
+                }
+            ]
         },
         {
-            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-            "apiVersion": "2019-06-01",
-            "name": "[concat(parameters('storageAccountName'), '/default/input')]",
-            "dependsOn": [
-                "[parameters('storageAccountName')]"
-            ]
+        "type": "Microsoft.Web/serverfarms",
+        "name": "[parameters('serverFarmName')]",
+        "apiVersion": "2018-02-01",
+        "location": "[resourceGroup().location]",
+        "sku": {
+            "name": "S1"
         }
+    },
+    {
+        "type": "Microsoft.Web/sites",
+        "apiVersion": "2016-08-01",
+        "name": "[parameters('webAppName')]",
+        "location": "[resourceGroup().location]",
+        "dependsOn": [
+            "[parameters('serverFarmName')]"
+        ],
+        "properties": {
+            "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverFarmName'))]"
+        }
+    }
     ],
     "outputs": {}
 }
