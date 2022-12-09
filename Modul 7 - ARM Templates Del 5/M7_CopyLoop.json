@@ -2,20 +2,16 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "storages": {
-            "type": "array",
-            "defaultValue": [
-                "prod",
-                "dev",
-                "test"
-            ]
+        "storageAccountCount": {
+            "type": "int",
+            "defaultValue": 5
         }
     },
     "variables": {},
     "resources": [
         {
             "type": "Microsoft.Storage/storageAccounts",
-            "name": "[concat('s', uniqueString(resourceGroup().id), parameters('storages') [copyIndex('copyStorage')])]",
+            "name": "[concat('storage', uniqueString(resourceGroup().id), copyIndex('copyStorage', 1))]",
             "apiVersion": "2019-06-01",
             "location": "[resourceGroup().location]",
             "sku": {
@@ -24,8 +20,20 @@
             "kind": "StorageV2",
             "copy": {
                 "name": "copyStorage",
-                "count": "[length(parameters('storages'))]"
+                "count": "[parameters('storageAccountCount')]"
             }
+        },
+        {
+            "type": "Microsoft.DataFactory/factories",
+            "apiVersion": "2018-06-01",
+            "name": "dependant-datafactory",
+            "location": "[resourceGroup().location]",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "dependsOn": [
+                "copyStorage"
+            ]
         }
     ],
     "outputs": {}
