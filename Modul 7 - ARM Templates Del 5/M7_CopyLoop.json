@@ -2,6 +2,10 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "storageAccountName": {
+            "type": "string",
+            "defaultValue": "samdhm7"
+        },
         "farmName": {
             "type": "string",
             "defaultValue": "mywebappplan"
@@ -16,6 +20,7 @@
         }
     },
     "variables": {
+        "storageAccountName": "[concat(parameters('storageAccountName'), uniqueString(resourceGroup().id))]",
         "farmName": "[concat(parameters('farmName'), uniqueString(resourceGroup().id))]",
         "webAppName": "[concat(parameters('webAppName'), uniqueString(resourceGroup().id))]"
     },
@@ -23,7 +28,7 @@
         {
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2019-06-01",
-            "name": "[concat('storage', uniqueString(resourceGroup().id), copyIndex('copystorage', 1))]",
+            "name": "[concat(variables('storageAccountName'), copyIndex('copystorage', 1))]",
             "location": "[resourceGroup().location]",
             "kind": "StorageV2",
             "sku": {
@@ -61,7 +66,7 @@
                             "count": "[parameters('storageAccountCount')]",
                             "input": {
                                 "name": "[concat('storageAccessKey', copyIndex('appSettings'))]",
-                                "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', concat('storage', uniqueString(resourceGroup().id), copyIndex('appSettings', 1))), '2019-06-01').keys[0].value]"
+                                "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', concat(variables('storageAccountName'), copyIndex('appSettings', 1))), '2019-06-01').keys[0].value]"
                             }
                         }
                     ]
