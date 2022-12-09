@@ -7,11 +7,20 @@
             "defaultValue": 5
         }
     },
-    "variables": {},
+    "variables": {
+        "storageAccountName": "[concat('storage', uniqueString(resourceGroup().id))]",
+        "copy":[
+            {
+                "name": "containerNames",
+                "count": "[parameters('containerCount')]",
+                "input": "[concat(variables('storageAccountName'),  '/default/container', copyIndex('containerNames', 1))]"
+            }
+        ]
+    },
     "resources": [
         {
             "type": "Microsoft.Storage/storageAccounts",
-            "name": "[concat('storage', uniqueString(resourceGroup().id))]",
+            "name": "[variables('storageAccountName')]",
             "apiVersion": "2019-06-01",
             "location": "[resourceGroup().location]",
             "sku": {
@@ -22,13 +31,13 @@
         {
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
             "apiVersion": "2019-06-01",
-            "name": "[concat('storage', uniqueString(resourceGroup().id), '/default/container', copyIndex('copyContainers', 1))]",
+            "name": "[variables('containerNames')[copyIndex('copycontainers')]]",
             "copy": {
-                "name": "copyContainers",
-                "count": "[parameters('containerCount')]"
+                "name": "copycontainers",
+                "count": "[length(variables('containerNames'))]"
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', concat('storage', uniqueString(resourceGroup().id)))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
             ]
         }
     ],
