@@ -2,7 +2,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "storageAccountCount": {
+        "containerCount": {
             "type": "int",
             "defaultValue": 5
         }
@@ -11,28 +11,24 @@
     "resources": [
         {
             "type": "Microsoft.Storage/storageAccounts",
-            "name": "[concat('storage', uniqueString(resourceGroup().id), copyIndex('copyStorage', 1))]",
+            "name": "[concat('storage', uniqueString(resourceGroup().id))]",
             "apiVersion": "2019-06-01",
             "location": "[resourceGroup().location]",
             "sku": {
                 "name": "Standard_LRS"
             },
-            "kind": "StorageV2",
-            "copy": {
-                "name": "copyStorage",
-                "count": "[parameters('storageAccountCount')]"
-            }
+            "kind": "StorageV2"
         },
         {
-            "type": "Microsoft.DataFactory/factories",
-            "apiVersion": "2018-06-01",
-            "name": "dependant-datafactory",
-            "location": "[resourceGroup().location]",
-            "identity": {
-                "type": "SystemAssigned"
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "apiVersion": "2019-06-01",
+            "name": "[concat('storage', uniqueString(resourceGroup().id), '/default/container', copyIndex('copyContainers', 1))]",
+            "copy": {
+                "name": "copyContainers",
+                "count": "[parameters('containerCount')]"
             },
             "dependsOn": [
-                "copyStorage"
+                "[resourceId('Microsoft.Storage/storageAccounts', concat('storage', uniqueString(resourceGroup().id)))]"
             ]
         }
     ],
