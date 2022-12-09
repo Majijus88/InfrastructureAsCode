@@ -67,10 +67,19 @@
         "name": "[parameters('webAppName')]",
         "location": "[resourceGroup().location]",
         "dependsOn": [
-            "[parameters('serverFarmName')]"
+            "[parameters('serverFarmName')]",
+            "[parameters('storageAccountName')]"
         ],
         "properties": {
-            "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverFarmName'))]"
+            "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverFarmName'))]",
+            "siteConfig": {
+                "appSettings": [
+                    {
+                        "name": "storageAccessKeys",
+                        "value": "[listKeys(parameters('storageAccountName'), '2019-06-01' ).keys[0].value]"
+                    }
+                ]
+            }
         }
     }
     ],
