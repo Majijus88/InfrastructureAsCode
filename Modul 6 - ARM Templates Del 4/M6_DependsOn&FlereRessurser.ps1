@@ -15,7 +15,7 @@ New-AzResourceGroupDeployment `
     -ResourceGroupName $rg `
     -TemplateFile '.\Modul 6 - ARM Templates Del 4\M6_DependsOn&FlereRessurser.json' `
     -storageAccountName "samdhm6dependson" `
-    -serverFarmName "mdhFarmM6" `
-    -webAppName "mdhAppM6"
+    -serverFarmName "samdhm6dependson" `
+    -webAppName "samdhm6dependson"
 #Kommandoen nedenfor brukes for å slette RG jeg benytter i modulen
 #Remove-AzResourceGroup -Name $rg -Force:$true

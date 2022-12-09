@@ -47,7 +47,7 @@
                     "apiVersion": "2019-06-01",
                     "name": "/default/input",
                     "dependsOn": [
-                        "[parameters('storageAccountName')]"
+                        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
                     ]
                 }
             ]
@@ -67,8 +67,8 @@
         "name": "[parameters('webAppName')]",
         "location": "[resourceGroup().location]",
         "dependsOn": [
-            "[parameters('serverFarmName')]",
-            "[parameters('storageAccountName')]"
+            "[resourceId('Microsoft.Web/serverfarms', parameters('serverFarmName'))]",
+            "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
         ],
         "properties": {
             "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverFarmName'))]",
@@ -76,7 +76,7 @@
                 "appSettings": [
                     {
                         "name": "storageAccessKeys",
-                        "value": "[listKeys(parameters('storageAccountName'), '2019-06-01' ).keys[0].value]"
+                        "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2019-06-01' ).keys[0].value]"
                     }
                 ]
             }
