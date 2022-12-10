@@ -16,9 +16,19 @@
                     "scope": "inner"
                 },
                 "mode": "Incremental",
+                "parameters": {
+                    "parentVariabel": {
+                        "value": "[variables('eksempelvariabel')]"
+                    }
+                },
                 "template": {
                         "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
                         "contentVersion": "1.0.0.0",
+                        "parameters": {
+                            "parentVariabel": {
+                                "type": "string"
+                            }
+                        },
                         "variables": {
                             "eksempelvariabel": "fra child (nested)"
                         },
@@ -27,6 +37,10 @@
                             "resultInner": {
                                 "type": "string",
                                 "value": "[variables('eksempelvariabel')]"
+                            },
+                            "resultInnerParent": {
+                                "type": "string",
+                                "value":"[parameters('parentVariabel')]"
                             }
                         }
                 }
@@ -38,6 +52,11 @@
             "type": "string",
             //Her henter jeg verdien fra eksempelvariabel definert i inner
             "value": "[reference('nestedTemplate').outputs.resultInner.value]"
+        },
+        "resultParentOuter": {
+            "type": "string",
+            //Her henter jeg ut verdien fra parentVariabel som har fått verdien sin fra den ytre eksempelvariabelen. Gir derav samme som resultat som om jeg bare skulle skrevet ()
+            "value": "[reference('nestedTemplate').outputs.resultInnerParent.value]"
         }
     }
 }
