@@ -2,9 +2,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {},
-    "variables": {
-        "eksempelvariabel": "fra parent (outer)"
-    },
+    "variables": {},
     "resources": [
         {
             "type": "Microsoft.Resources/deployments",
@@ -16,47 +14,32 @@
                     "scope": "inner"
                 },
                 "mode": "Incremental",
-                "parameters": {
-                    "parentVariabel": {
-                        "value": "[variables('eksempelvariabel')]"
-                    }
-                },
                 "template": {
                         "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
                         "contentVersion": "1.0.0.0",
-                        "parameters": {
-                            "parentVariabel": {
-                                "type": "string"
+                        "parameters": {},
+                        "variables": {},
+                        "resources": [
+                            {
+                                "type": "Microsoft.Storage/storageAccounts",
+                                "apiVersion": "2019-06-01",
+                                "location":"[resourceGroup().location]",
+                                "name": "[concat('samdhm9', uniqueString(resourceGroup().id))]",
+                                "sku": {
+                                    "name": "Standard_LRS",
+                                },
+                                "kind": "StorageV2"
                             }
-                        },
-                        "variables": {
-                            "eksempelvariabel": "fra child (nested)"
-                        },
-                        "resources": [],
+                        ],
                         "outputs": {
-                            "resultInner": {
+                            "storageUri": {
                                 "type": "string",
-                                "value": "[variables('eksempelvariabel')]"
-                            },
-                            "resultInnerParent": {
-                                "type": "string",
-                                "value":"[parameters('parentVariabel')]"
+                                "value": "[reference(concat('samdhm9', uniqueString(resourceGroup().id))).primaryEndpoints.blob]"
                             }
                         }
+                        }
                 }
-            }
         }
     ],
-    "outputs": {
-        "resultOuter": {
-            "type": "string",
-            //Her henter jeg verdien fra eksempelvariabel definert i inner
-            "value": "[reference('nestedTemplate').outputs.resultInner.value]"
-        },
-        "resultParentOuter": {
-            "type": "string",
-            //Her henter jeg ut verdien fra parentVariabel som har fått verdien sin fra den ytre eksempelvariabelen. Gir derav samme som resultat som om jeg bare skulle skrevet ()
-            "value": "[reference('nestedTemplate').outputs.resultInnerParent.value]"
-        }
-    }
+    "outputs": {}
 }
