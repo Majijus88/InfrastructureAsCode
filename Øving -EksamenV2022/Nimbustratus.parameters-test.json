@@ -5,6 +5,9 @@
         "storageAccountName": {
             "value": "sanim"
         },
+        "storageAccountSKU": {
+            "value": "Standard_LRS"
+        },
         "farmName": {
             "value": "nimfarm"
         },
