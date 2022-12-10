@@ -8,11 +8,12 @@
         }
     },
     "variables": {
+        "deployStorage": "[not(empty(parameters('storageAccountName')))]",
         "storageAccountName": "[if(not(empty(parameters('storageAccountName'))), parameters('storageAccountName'), 'defstorage' )]"
     },
     "resources": [
         {
-            "condition": "[not(empty(parameters('storageAccountName')))]",
+            "condition": "[variables('deployStorage')]",
             "type": "Microsoft.Storage/storageAccounts",
             "name": "[variables('storageAccountName')]",
             "apiVersion": "2019-06-01",
@@ -47,8 +48,8 @@
                     "appSettings": [
                         {
                             "name": "storageAccessKey",
-                            //Tolkes som "Hvis parametert IKKE er tomt, list opp nøkkler til Storage Account. Om parameteret er tomt, returneres en tom streng 
-                            "value": "[if(not(empty(parameters('storageAccountName'))), listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01' ).keys[0].value, '')]"
+                            //Tolkes som "Hvis verdien av variabelen deployStorage IKKE er tom, list opp nøkkler til Storage Account. Om parameteret er tomt, returneres en tom streng \
+                            "value": "[if(variables('deployStorage'), listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01' ).keys[0].value, '')]"
                         }
                     ]
                 }
