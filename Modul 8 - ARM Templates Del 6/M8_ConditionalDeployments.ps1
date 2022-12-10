@@ -14,7 +14,7 @@ New-AzResourceGroupDeployment `
     -Name "M8-ConditionalDeployment" `
     -ResourceGroupName $rg `
     -TemplateFile '.\Modul 8 - ARM Templates Del 6\M8_ConditionalDeployments.json' `
-    -storageAccountName 'samdhm8'
+    -allowAzureIPs "Yes"
 
 #Kommandoen nedenfor brukes for å slette RG jeg benytter i modulen
 #Remove-AzResourceGroup -Name $rg -Force:$true

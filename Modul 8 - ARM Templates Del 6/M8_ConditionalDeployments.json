@@ -2,58 +2,52 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "storageAccountName": {
+        "adminLogin": {
             "type": "string",
-            "defaultValue": ""
+            "defaultValue": "bjarne"
+        },
+        "adminPassword": {
+            "type": "securestring",
+            "defaultValue": "FHJDFjhu98fh_"
+        },
+        "allowAzureIPs": {
+            "type": "string",
+            "allowedValues": [
+                "Yes",
+                "No"
+            ]
         }
     },
     "variables": {
-        "deployStorage": "[not(empty(parameters('storageAccountName')))]",
-        "storageAccountName": "[if(not(empty(parameters('storageAccountName'))), parameters('storageAccountName'), 'defstorage' )]"
+        "serverName": "[concat('mdh-sqlserver-', uniqueString(resourceGroup().id))]"
     },
     "resources": [
         {
-            "condition": "[variables('deployStorage')]",
-            "type": "Microsoft.Storage/storageAccounts",
-            "name": "[variables('storageAccountName')]",
-            "apiVersion": "2019-06-01",
+            "type": "Microsoft.Sql/servers",
+            "apiVersion": "2015-05-01-preview",
+            "name": "[variables('serverName')]",
             "location": "[resourceGroup().location]",
-            "sku": {
-                "name": "Standard_LRS"
-            },
-            "kind": "StorageV2"
-        },
-        {
-            "type": "Microsoft.Web/serverfarms",
-            "apiVersion": "2018-02-01",
-            "name": "[concat('serverfarm-', uniqueString(resourceGroup().id))]",
-            "location": "[resourceGroup().location]",
-            "sku": {
-                "name": "S1"
-            },
-            "properties": {}
-        },
-        {
-            "type": "Microsoft.Web/sites",
-            "apiVersion": "2018-02-01",
-            "name": "[concat('website-', uniqueString(resourceGroup().id))]",
-            "location": "[resourceGroup().location]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', concat('serverfarm-', uniqueString(resourceGroup().id)))]",
-                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
-            ],
             "properties": {
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', concat('serverfarm-', uniqueString(resourceGroup().id)))]",
-                "siteConfig": {
-                    "appSettings": [
-                        {
-                            "name": "storageAccessKey",
-                            //Tolkes som "Hvis verdien av variabelen deployStorage IKKE er tom, list opp nøkkler til Storage Account. Om parameteret er tomt, returneres en tom streng \
-                            "value": "[if(variables('deployStorage'), listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01' ).keys[0].value, '')]"
-                        }
-                    ]
+                "administratorLogin": "[parameters('adminLogin')]",
+                "administratorLoginPassword": "[parameters('adminPassword')]",
+                "version": "12.0"
+            },
+            "resources": [
+                {
+                    "condition": "[equals(parameters('allowAzureIPs'), 'Yes')]",
+                    "type": "firewallRules",
+                    "apiVersion": "2015-05-01-preview",
+                    "name": "allowIPs",
+                    "location":"[resourceGroup().location]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Sql/servers', variables('serverName'))]"
+                    ],
+                    "properties": {
+                        "endIpAddress": "0.0.0.0",
+                        "startIpAddress": "0.0.0.0"
+                    }
                 }
-            }
+            ]
         }
     ],
     "outputs": {}
