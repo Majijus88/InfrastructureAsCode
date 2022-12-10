@@ -4,15 +4,17 @@
     "parameters": {
         "storageAccountName": {
             "type": "string",
-            "defaultValue": "samdh8"
+            "defaultValue": ""
         }
     },
-    "variables": {},
+    "variables": {
+        "storageAccountName": "[if(not(empty(parameters('storageAccountName'))), parameters('storageAccountName'), 'defstorage' )]"
+    },
     "resources": [
         {
             "condition": "[not(empty(parameters('storageAccountName')))]",
             "type": "Microsoft.Storage/storageAccounts",
-            "name": "[parameters('storageAccountName')]",
+            "name": "[variables('storageAccountName')]",
             "apiVersion": "2019-06-01",
             "location": "[resourceGroup().location]",
             "sku": {
