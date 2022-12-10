@@ -2,11 +2,14 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {},
-    "variables": {},
+    "variables": {
+        "eksempelvariabel": "fra parent (outer)"
+    },
     "resources": [
         {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2017-05-10",
+            //Dette blir navnet på den indre deploymenten under kjøring.
             "name": "nestedTemplate",
             "properties": {
                 "expressionEvaluationOptions": {
@@ -16,10 +19,25 @@
                 "template": {
                         "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
                         "contentVersion": "1.0.0.0",
-                        "resources": []
+                        "variables": {
+                            "eksempelvariabel": "fra child (nested)"
+                        },
+                        "resources": [],
+                        "outputs": {
+                            "resultInner": {
+                                "type": "string",
+                                "value": "[variables('eksempelvariabel')]"
+                            }
+                        }
                 }
             }
         }
     ],
-    "outputs": {}
+    "outputs": {
+        "resultOuter": {
+            "type": "string",
+            //Her henter jeg verdien fra eksempelvariabel definert i inner
+            "value": "[reference('nestedTemplate').outputs.resultInner.value]"
+        }
+    }
 }
