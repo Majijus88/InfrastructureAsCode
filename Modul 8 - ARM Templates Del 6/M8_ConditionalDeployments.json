@@ -21,6 +21,38 @@
                 "name": "Standard_LRS"
             },
             "kind": "StorageV2"
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2018-02-01",
+            "name": "[concat('serverfarm-', uniqueString(resourceGroup().id))]",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "S1"
+            },
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2018-02-01",
+            "name": "[concat('website-', uniqueString(resourceGroup().id))]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', concat('serverfarm-', uniqueString(resourceGroup().id)))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+            ],
+            "properties": {
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', concat('serverfarm-', uniqueString(resourceGroup().id)))]",
+                "siteConfig": {
+                    "appSettings": [
+                        {
+                            "name": "storageAccessKey",
+                            //Tolkes som "Hvis parametert IKKE er tomt, list opp nøkkler til Storage Account. Om parameteret er tomt, returneres en tom streng 
+                            "value": "[if(not(empty(parameters('storageAccountName'))), listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2019-06-01' ).keys[0].value, '')]"
+                        }
+                    ]
+                }
+            }
         }
     ],
     "outputs": {}
