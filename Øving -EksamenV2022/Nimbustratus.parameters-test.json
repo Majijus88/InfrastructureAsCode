@@ -1,0 +1,21 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "storageAccountName": {
+            "value": "sanim"
+        },
+        "farmName": {
+            "value": "nimfarm"
+        },
+        "webAppName": {
+            "value": "nimapp"
+        },
+        "storageAccountCount": {
+            "value": 3
+        },
+        "Departments": {
+            "value": "test"
+        }
+    }
+}

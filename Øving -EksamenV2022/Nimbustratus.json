@@ -1,0 +1,87 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "storageAccountName": {
+            "type": "string",
+            "defaultValue": "samdhm7"
+        },
+        "farmName": {
+            "type": "string",
+            "defaultValue": "mywebappplan"
+        },
+        "webAppName": {
+            "type": "string",
+            "defaultValue": "mywebapp"
+        },
+        "storageAccountCount": {
+            "type": "int",
+            "defaultValue": 3
+        },
+        "Departments": {
+            "type": "string",
+            "defaultValue": "test",
+            "allowedValues":[
+                "test",
+                "dev",
+                "prod"
+            ]
+        }
+    },
+    "variables": {
+        "storageAccountName": "[concat(parameters('storageAccountName'), uniqueString(resourceGroup().id), parameters('Departments'))]",
+        "farmName": "[concat(parameters('farmName'), uniqueString(resourceGroup().id),parameters('Departments'))]",
+        "webAppName": "[concat(parameters('webAppName'), uniqueString(resourceGroup().id), parameters('Departments'))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2019-06-01",
+            "name": "[concat(variables('storageAccountName'), copyIndex('copystorage', 1))]",
+            "location": "[resourceGroup().location]",
+            "kind": "StorageV2",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "copy": {
+                "name": "copystorage",
+                "count": "[parameters('storageAccountCount')]"
+            }
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2018-02-01",
+            "name": "[variables('farmName')]",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "S1"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2018-02-01",
+            "name": "[variables('webAppName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', variables('farmName'))]",
+                "copystorage"
+            ],
+            "properties": {
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('farmName'))]",
+                "siteConfig": {
+                    "copy": [
+                        {
+                            "name": "appSettings",
+                            "count": "[parameters('storageAccountCount')]",
+                            "input": {
+                                "name": "[concat('storageAccessKey', copyIndex('appSettings'))]",
+                                "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', concat(variables('storageAccountName'), copyIndex('appSettings', 1))), '2019-06-01').keys[0].value]"
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "outputs": {}
+}
