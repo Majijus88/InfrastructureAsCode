@@ -15,19 +15,22 @@ New-AzResourceGroupDeployment `
     -Name "Nimbustratus-Test-Test" `
     -ResourceGroupName $rg `
     -TemplateFile '.\Øving -EksamenV2022\Nimbustratus.json' `
-    -TemplateParameterFile '.\Øving -EksamenV2022\Nimbustratus.parameters-test.json'
+    -TemplateParameterFile '.\Øving -EksamenV2022\Nimbustratus.parameters-test.json' `
+    -allowAzureIPs "Yes"
 
 New-AzResourceGroupDeployment `
     -Name "Nimbustratus-Prod-Test" `
     -ResourceGroupName $rg `
     -TemplateFile '.\Øving -EksamenV2022\Nimbustratus.json' `
-    -TemplateParameterFile '.\Øving -EksamenV2022\Nimbustratus.parameters-prod.json'
+    -TemplateParameterFile '.\Øving -EksamenV2022\Nimbustratus.parameters-prod.json' `
+    -allowAzureIPs "Yes"
 
 New-AzResourceGroupDeployment `
     -Name "Nimbustratus-Dev-Test" `
     -ResourceGroupName $rg `
     -TemplateFile '.\Øving -EksamenV2022\Nimbustratus.json' `
-    -TemplateParameterFile '.\Øving -EksamenV2022\Nimbustratus.parameters-dev.json'
+    -TemplateParameterFile '.\Øving -EksamenV2022\Nimbustratus.parameters-dev.json' `
+    -allowAzureIPs "Yes"
 
 #Kommandoen nedenfor brukes for å slette RG jeg benytter i modulen
 #Remove-AzResourceGroup -Name $rg -Force:$true

@@ -30,6 +30,25 @@
             "type": "int",
             "defaultValue": 3
         },
+        "sqlServerName": {
+            "type": "string",
+            "defaultValue": "nimSQL"
+        },
+        "adminLogin": {
+            "type": "string",
+            "defaultValue": "marius"
+        },
+        "adminPassword": {
+            "type": "securestring",
+            "defaultValue": "04PaSsWorD06"
+        },
+        "allowAzureIPs":{
+            "type": "string",
+            "allowedValues": [
+                "Yes",
+                "No"
+            ]
+        },
         "Departments": {
             "type": "string",
             "defaultValue": "test",
@@ -45,11 +64,12 @@
         "deployServerFarm": "[not(empty(parameters('farmName')))]",
         "storageAccountName": "[concat(parameters('storageAccountName'), uniqueString(resourceGroup().id), parameters('Departments'))]",
         "farmName": "[concat(parameters('farmName'), uniqueString(resourceGroup().id),parameters('Departments'))]",
-        "webAppName": "[concat(parameters('webAppName'), uniqueString(resourceGroup().id), parameters('Departments'))]"
+        "webAppName": "[concat(parameters('webAppName'), uniqueString(resourceGroup().id), parameters('Departments'))]",
+        "sqlServerName": "[concat(parameters('sqlServerName'), uniqueString(resourceGroup().id, parameters('Departments')))]"
     },
     "resources": [
         {
-            "condition":"[variables('deployStorage')]",
+            "condition": "[variables('deployStorage')]",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2019-06-01",
             "name": "[concat(variables('storageAccountName'), copyIndex('copystorage', 1))]",
@@ -107,6 +127,33 @@
                     ]
                 }
             }
+        },
+        {
+            "type": "Microsoft.Sql/servers",
+            "apiVersion": "2015-05-01-preview",
+            "name": "[variables('sqlServerName')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "administratorLogin": "[parameters('adminLogin')]",
+                "administratorLoginPassword": "[parameters('adminPassword')]",
+                "version": "12.0"
+            },
+            "resources": [
+                {
+                    "condition": "[equals(parameters('allowAzureIPs'), 'Yes')]",
+                    "type": "firewallRules",
+                    "apiVersion": "2015-05-01-preview",
+                    "name": "allowIPs",
+                    "location": "[resourceGroup().location]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Sql/servers', variables('sqlServerName'))]"
+                    ],
+                    "properties": {
+                        "endIpAddress": "0.0.0.0",
+                        "startIpAddress": "0.0.0.0"
+                    }
+                }
+            ]
         }
     ],
     "outputs": {
