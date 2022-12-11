@@ -20,11 +20,11 @@
         },
         "farmName": {
             "type": "string",
-            "defaultValue": "mywebappplan"
+            "defaultValue": "nimfarm"
         },
         "webAppName": {
             "type": "string",
-            "defaultValue": "mywebapp"
+            "defaultValue": "nimapp"
         },
         "storageAccountCount": {
             "type": "int",
@@ -44,6 +44,7 @@
         },
         "allowAzureIPs":{
             "type": "string",
+            "defaultValue": "No",
             "allowedValues": [
                 "Yes",
                 "No"
@@ -65,7 +66,7 @@
         "storageAccountName": "[concat(parameters('storageAccountName'), uniqueString(resourceGroup().id), parameters('Departments'))]",
         "farmName": "[concat(parameters('farmName'), uniqueString(resourceGroup().id),parameters('Departments'))]",
         "webAppName": "[concat(parameters('webAppName'), uniqueString(resourceGroup().id), parameters('Departments'))]",
-        "sqlServerName": "[concat(parameters('sqlServerName'), uniqueString(resourceGroup().id, parameters('Departments')))]"
+        "sqlServerName": "[concat(parameters('sqlServerName'), uniqueString(resourceGroup().id), parameters('Departments'))]"
     },
     "resources": [
         {

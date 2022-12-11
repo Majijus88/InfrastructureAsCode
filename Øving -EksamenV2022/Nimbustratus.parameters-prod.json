@@ -8,6 +8,9 @@
         "storageAccountSKU": {
             "value": "Standard_GRS"
         },
+        "blobName": {
+            "value": "nimblob"
+        },
         "farmName": {
             "value": "nimfarm"
         },
@@ -16,6 +19,18 @@
         },
         "storageAccountCount": {
             "value": 3
+        },
+        "sqlServerName": {
+            "value": "nimSQL"
+        },
+        "adminLogin": {
+            "value": "marius"
+        },
+        "adminPassword": {
+            "value": "04PaSsWorD06"
+        },
+        "allowAzureIPs": {
+            "value": "Yes"
         },
         "Departments": {
             "value": "prod"
