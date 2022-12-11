@@ -37,12 +37,15 @@
         }
     },
     "variables": {
+        "deployStorage": "[not(empty(parameters('storageAccountName')))]",
+        "deployServerFarm": "[not(empty(parameters('farmName')))]",
         "storageAccountName": "[concat(parameters('storageAccountName'), uniqueString(resourceGroup().id), parameters('Departments'))]",
         "farmName": "[concat(parameters('farmName'), uniqueString(resourceGroup().id),parameters('Departments'))]",
         "webAppName": "[concat(parameters('webAppName'), uniqueString(resourceGroup().id), parameters('Departments'))]"
     },
     "resources": [
         {
+            "condition":"[variables('deployStorage')]",
             "type": "Microsoft.Storage/storageAccounts",
             "apiVersion": "2019-06-01",
             "name": "[concat(variables('storageAccountName'), copyIndex('copystorage', 1))]",
@@ -57,6 +60,7 @@
             }
         },
         {
+            "condition": "[variables('deployServerFarm')]",
             "type": "Microsoft.Web/serverfarms",
             "apiVersion": "2018-02-01",
             "name": "[variables('farmName')]",
@@ -83,7 +87,7 @@
                             "count": "[parameters('storageAccountCount')]",
                             "input": {
                                 "name": "[concat('storageAccessKey', copyIndex('appSettings'))]",
-                                "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', concat(variables('storageAccountName'), copyIndex('appSettings', 1))), '2019-06-01').keys[0].value]"
+                                "value": "[if(variables('deployStorage'), listKeys(resourceId('Microsoft.Storage/storageAccounts', concat(variables('storageAccountName'), copyIndex('appSettings', 1))), '2019-06-01').keys[0].value, '')]"
                             }
                         }
                     ]
@@ -91,5 +95,13 @@
             }
         }
     ],
-    "outputs": {}
+    "outputs": {
+        "storageEndpoints": {
+            "type": "array",
+            "copy": {
+                "count": "[parameters('storageAccountCount')]",
+                "input": "[reference(concat(variables('storageAccountName'), copyIndex(1))).primaryEndpoints.blob]"
+            }
+        }
+    }
 }
