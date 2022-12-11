@@ -14,6 +14,10 @@
                 "Standard_GRS"
             ]
         },
+        "blobName": {
+            "type": "string",
+            "defaultValue": "nimblob"
+        },
         "farmName": {
             "type": "string",
             "defaultValue": "mywebappplan"
@@ -57,7 +61,17 @@
             "copy": {
                 "name": "copystorage",
                 "count": "[parameters('storageAccountCount')]"
-            }
+            },
+            "resources": [
+                {
+                    "type": "blobServices/containers",
+                    "apiVersion": "2019-06-01",
+                    "name": "[concat('/default/nimblob', parameters('Departments'))]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Storage/storageAccounts', concat(variables('storageAccountName'), copyIndex(1)))]"
+                    ]
+                }
+            ]
         },
         {
             "condition": "[variables('deployServerFarm')]",
