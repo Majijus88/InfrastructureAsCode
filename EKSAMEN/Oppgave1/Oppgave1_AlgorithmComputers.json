@@ -1,32 +1,87 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
         "storageAccountName": {
+            "type": "string"
+        },
+        "location": {
             "type": "string",
-            "defaultValue": "acsa"
+            "defaultValue": "North Europe",
+            "allowedValues": [
+                "North Europe",
+                "northeurope",
+                "West Europe",
+                "westeurope"
+            ]
+        },
+        "storageAccountSKU": {
+            "type": "string",
+            "defaultValue": "Standard_LRS",
+            "allowedValues": [
+                "Standard_LRS",
+                "Standard_GRS"
+            ]
+        },
+        "serverFarmName": {
+            "type": "string"
+        },
+        "webAppName": {
+            "type": "string"
         }
     },
     "variables": {},
     "resources": [
         {
             "type": "Microsoft.Storage/storageAccounts",
-            "apiVersion": "2019-06-01",
-            "location": "[resourceGroup().location]",
             "name": "[parameters('storageAccountName')]",
+            "apiVersion": "2019-06-01",
+            "location": "[parameters('location')]",
             "sku": {
-                "name": "Standard_LRS"
+                "name": "[parameters('storageAccountSKU')]"
+            },
+            "kind": "StorageV2",
+            "resources": [
+                {
+                    "type": "blobServices/containers",
+                    "apiVersion": "2019-06-01",
+                    "name": "/default/input",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "name": "[parameters('serverFarmName')]",
+            "apiVersion": "2018-02-01",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "S1"
             }
         },
         {
-            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-            "apiVersion": "2019-06-01",
-            "name": "[concat(parameters('storageAccountName'), '/default/input')]",
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2016-08-01",
+            "name": "[parameters('webAppName')]",
+            "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[parameters('storageAccountName')]"
-            ]
+                "[resourceId('Microsoft.Web/serverfarms', parameters('serverFarmName'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+            ],
+            "properties": {
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverFarmName'))]",
+                "siteConfig": {
+                    "appSettings": [
+                        {
+                            "name": "storageAccessKeys",
+                            "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2019-06-01' ).keys[0].value]"
+                        }
+                    ]
+                }
+            }
         }
     ],
-    "outputs": {},
-    "functions": []
+    "outputs": {}
 }
