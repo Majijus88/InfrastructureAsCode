@@ -3,7 +3,8 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "storageAccountName": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "saac"
         },
         "location": {
             "type": "string",
@@ -24,18 +25,22 @@
             ]
         },
         "serverFarmName": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "farmac"
         },
         "webAppName": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "webac"
         }
     },
     "variables": {
         "storageAccountName": "[concat(parameters('storageAccountName'), uniqueString(resourceGroup().id))]",
         "serverFarmName": "[concat(parameters('serverFarmName'), uniqueString(resourceGroup().id))]"
+
     },
     "resources": [
         {
+            "condition":"[not(empty(parameters('storageAccountName')))]",
             "type": "Microsoft.Storage/storageAccounts",
             "name": "[variables('storageAccountName')]",
             "apiVersion": "2019-06-01",
@@ -48,7 +53,7 @@
                 {
                     "type": "blobServices/containers",
                     "apiVersion": "2019-06-01",
-                    "name": "/default/input",
+                    "name": "/default/acblob",
                     "dependsOn": [
                         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
                     ]
@@ -56,6 +61,7 @@
             ]
         },
         {
+            "condition": "[not(empty(parameters('serverFarmName')))]",
             "type": "Microsoft.Web/serverfarms",
             "name": "[variables('serverFarmName')]",
             "apiVersion": "2018-02-01",

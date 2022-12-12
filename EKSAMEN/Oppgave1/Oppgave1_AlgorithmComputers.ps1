@@ -15,9 +15,11 @@ New-AzResourceGroupDeployment `
     -Name "Oppgave1-Test" `
     -ResourceGroupName $rg `
     -TemplateFile '.\EKSAMEN\Oppgave1\Oppgave1_AlgorithmComputers.json' `
-    -storageAccountName "saactest" `
-    -serverFarmName "farmactest" `
-    -webAppName "appactest"
+    #-storageAccountName "saac" `
+    #-location "North Europe" `
+    #-storageAccountSKU "Standard_LRS" `
+    #-serverFarmName "farmactest" `
+    #-webAppName "appactest"
 
 #Kommandoen nedenfor brukes for å slette RG jeg benytter i modulen
 #Remove-AzResourceGroup -Name $rg -Force:$true
