@@ -5,32 +5,45 @@
 #$secret = "pa08Q~n4Ps2h5blo8Y6UxMJ~vl.SROCiCCbjsc8s"
 #Connect-AzAccount -ServicePrincipal -Credential $credentials -TenantId $tenantid -Environment AzureCloud -Subscription $subscriptionid
 
-$rg = "AlgorithmComputers-Oppgave2-MDH"
+$rg = "AlgorithmComputers-Eksamen-MDH"
 $location = "West Europe"
 #Oppretter en ny Resource Group med navn og location definert ovenfor i variabelene $rg og $location
 New-AzResourceGroup -Name $rg -Location $location -Force
 
-#Oppretter en ny deployment  der jeg kan sette inn Name, RG og Templatefil
+#Oppgave 1 - Proof of Concept
 New-AzResourceGroupDeployment `
-    -Name "AC-Testmiljø" `
+    -Name "Oppgave1_ProofOfConcept" `
+    -ResourceGroupName $rg `
+    -TemplateFile '.\EKSAMEN\Oppgave1\Oppgave1_AlgorithmComputers.json' `
+    #-storageAccountName "saac" `
+    #-location "North Europe" `
+    #-storageAccountSKU "Standard_LRS" `
+    #-serverFarmName "farmactest" `
+    #-webAppName "appactest"
+
+#Oppgave 2 - AC-Testmiljø
+New-AzResourceGroupDeployment `
+    -Name "Oppgave2_AC_Testmiljø" `
     -ResourceGroupName $rg `
     -TemplateFile '.\EKSAMEN\Oppgave2\Oppgave2_AlgorithmComputers.json' `
     -TemplateParameterFile '.\EKSAMEN\Oppgave2\Oppgave2_AlgorithmComputers.parameters-test.json' `
     -allowAzureIPs "Yes"
 
+#Oppgave 2 - AC-Prodmiljø
 New-AzResourceGroupDeployment `
-    -Name "AC-Prodmiljø" `
+    -Name "Oppgave2_AC_Prodmiljø" `
     -ResourceGroupName $rg `
     -TemplateFile '.\EKSAMEN\Oppgave2\Oppgave2_AlgorithmComputers.json' `
     -TemplateParameterFile '.\EKSAMEN\Oppgave2\Oppgave2_AlgorithmComputers.parameters-prod.json' `
     -allowAzureIPs "Yes"
 
+#Oppgave 2 - AC-Devmiljø
 New-AzResourceGroupDeployment `
-    -Name "AC-Devmiljø" `
+    -Name "Oppgave2_AC_Devmiljø" `
     -ResourceGroupName $rg `
     -TemplateFile '.\EKSAMEN\Oppgave2\Oppgave2_AlgorithmComputers.json' `
     -TemplateParameterFile '.\EKSAMEN\Oppgave2\Oppgave2_AlgorithmComputers.parameters-dev.json' `
     -allowAzureIPs "Yes"
 
-#Kommandoen nedenfor brukes for å slette RG jeg benytter i modulen
+#Kommandoen nedenfor brukes for å slette RG jeg benytter for å teste under eksamen
 #Remove-AzResourceGroup -Name $rg -Force:$true
