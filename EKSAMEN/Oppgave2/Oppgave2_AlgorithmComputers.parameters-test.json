@@ -1,0 +1,39 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "storageAccountName": {
+            "value": "saac"
+        },
+        "storageAccountSKU": {
+            "value": "Standard_LRS"
+        },
+        "blobName": {
+            "value": "blobac"
+        },
+        "farmName": {
+            "value": "farmac"
+        },
+        "webAppName": {
+            "value": "appac"
+        },
+        "storageAccountCount": {
+            "value": 3
+        },
+        "sqlServerName": {
+            "value": "sqlac"
+        },
+        "adminLogin": {
+            "value": "marius"
+        },
+        "adminPassword": {
+            "value": "04PaSsWorD06"
+        },
+        "allowAzureIPs": {
+            "value": "No"
+        },
+        "Departments": {
+            "value": "test"
+        }
+    }
+}
