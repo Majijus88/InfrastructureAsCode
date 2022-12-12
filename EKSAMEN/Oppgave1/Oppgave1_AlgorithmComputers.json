@@ -54,7 +54,7 @@
         },
         {
             "type": "Microsoft.Web/serverfarms",
-            "name": "[parameters('serverFarmName')]",
+            "name": "[concat(parameters('serverFarmName'), uniqueString(resourceGroup().id))]",
             "apiVersion": "2018-02-01",
             "location": "[resourceGroup().location]",
             "sku": {
@@ -65,10 +65,10 @@
         {
             "type": "Microsoft.Web/sites",
             "apiVersion": "2016-08-01",
-            "name": "[parameters('webAppName')]",
+            "name": "[concat(parameters('webAppName'), uniqueString(resourceGroup().id))]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', parameters('serverFarmName'))]"
+                "[resourceId('Microsoft.Web/serverfarms', concat(parameters('serverFarmName'), uniqueString(resourceGroup().id)))]"
             ],
             "properties": {}
         }
