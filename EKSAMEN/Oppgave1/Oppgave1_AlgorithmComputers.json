@@ -59,7 +59,8 @@
             "location": "[resourceGroup().location]",
             "sku": {
                 "name": "S1"
-            }
+            },
+            "properties": {}
         },
         {
             "type": "Microsoft.Web/sites",
@@ -67,20 +68,9 @@
             "name": "[parameters('webAppName')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', parameters('serverFarmName'))]",
-                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+                "[resourceId('Microsoft.Web/serverfarms', parameters('serverFarmName'))]"
             ],
-            "properties": {
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverFarmName'))]",
-                "siteConfig": {
-                    "appSettings": [
-                        {
-                            "name": "storageAccessKeys",
-                            "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2019-06-01' ).keys[0].value]"
-                        }
-                    ]
-                }
-            }
+            "properties": {}
         }
     ],
     "outputs": {}
