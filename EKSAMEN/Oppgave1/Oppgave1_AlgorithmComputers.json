@@ -30,11 +30,14 @@
             "type": "string"
         }
     },
-    "variables": {},
+    "variables": {
+        "storageAccountName": "[concat(parameters('storageAccountName'), uniqueString(resourceGroup().id))]",
+        "serverFarmName": "[concat(parameters('serverFarmName'), uniqueString(resourceGroup().id))]"
+    },
     "resources": [
         {
             "type": "Microsoft.Storage/storageAccounts",
-            "name": "[concat(parameters('storageAccountName'), uniqueString(resourceGroup().id))]",
+            "name": "[variables('storageAccountName')]",
             "apiVersion": "2019-06-01",
             "location": "[parameters('location')]",
             "sku": {
@@ -47,14 +50,14 @@
                     "apiVersion": "2019-06-01",
                     "name": "/default/input",
                     "dependsOn": [
-                        "[resourceId('Microsoft.Storage/storageAccounts', concat(parameters('storageAccountName'), uniqueString(resourceGroup().id)))]"
+                        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
                     ]
                 }
             ]
         },
         {
             "type": "Microsoft.Web/serverfarms",
-            "name": "[concat(parameters('serverFarmName'), uniqueString(resourceGroup().id))]",
+            "name": "[variables('serverFarmName')]",
             "apiVersion": "2018-02-01",
             "location": "[resourceGroup().location]",
             "sku": {
@@ -68,7 +71,7 @@
             "name": "[concat(parameters('webAppName'), uniqueString(resourceGroup().id))]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', concat(parameters('serverFarmName'), uniqueString(resourceGroup().id)))]"
+                "[resourceId('Microsoft.Web/serverfarms', variables('serverFarmName'))]"
             ],
             "properties": {}
         }
